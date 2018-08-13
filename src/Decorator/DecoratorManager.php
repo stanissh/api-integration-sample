@@ -11,7 +11,7 @@ use src\Exceptions\RunTimeException;
 
 /**
 * Класс-декоратор для получение данных посредством оставщика API
-* @package src\Integration
+* @package src\Decorator
 */
 class DecoratorManager
 {
@@ -55,7 +55,9 @@ class DecoratorManager
     }
 
     /**
-     * Возвращает ответ от API
+     * Делает HTTP-запрос к API. Перед запросом проверяется, есть ли данные в кэше.
+     * Данные берутся из кэша, если они там есть. Иначе делается запрос к API.
+     * Результат запроса записывается в кэш на один день.
      * 
      * @param array $request
      * @throws ProviderException
@@ -64,7 +66,7 @@ class DecoratorManager
     public function get(array $input): array
     {
         try {
-            $cacheKey  = self::getCacheKey($input);
+            $cacheKey  = $this->getCacheKey($input);
             $cacheItem = $this->cache->getItem($cacheKey);
 
             // Если ответ есть в кэше
@@ -98,8 +100,10 @@ class DecoratorManager
      * @param array $input
      * @return string
      */
-    public static function getCacheKey(array $input)
+    public function getCacheKey(array $input)
     {
-        return md5(json_encode($input));
+        // В качестве одно из параметра ключа используем хост API, 
+        // что бы разгроничить кэширование по хостам
+        return md5($this->provider->getHost() . json_encode($input));
     }
 }

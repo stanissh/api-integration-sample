@@ -39,4 +39,14 @@ class DataProvider implements DataProviderInterface
     {
         // returns a response from external service
     }
+
+    /**
+     * Возвращает хост API
+     * 
+     * @return string
+     */
+    public function getHost()
+    {
+        return $this->host;
+    }
 }
