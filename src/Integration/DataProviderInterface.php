@@ -13,4 +13,11 @@ interface DataProviderInterface
      * @return mixed
      */
     public function get(array $request);
+
+    /**
+     * Возвращает хост API
+     * 
+     * @return string
+     */
+    public function getHost();
 }
